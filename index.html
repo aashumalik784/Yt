@@ -17,26 +17,52 @@
   <input type="text" id="title" placeholder="Video Title Likho">
   <button onclick="addIdea()">Save Kar Do</button>
   <div id="list">Loading...</div>
-  <script type="module">
-    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
-    const supabase = createClient('https://cjhekttfyzrqgwwyprjk.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNqaGVrdHRmeXpyZ3F3d3lwcmprIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg2OTIyNTIsImV4cCI6MjA5NDI2ODI1Mn0.E_7c0i0HrDNegAMXun-Fl-IT9uSUhx9upYHCpfnSuO8')
+
+  <script>
+    const URL = 'https://cjhekttfyzrqgwwyprjk.supabase.co/rest/v1/aashu_yt';
+    const KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNqaGVrdHRmeXpyZ3F3d3lwcmprIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg2OTIyNTIsImV4cCI6MjA5NDI2ODI1Mn0.E_7c0i0HrDNegAMXun-Fl-IT9uSUhx9upYHCpfnSuO8';
     
     async function loadIdeas() {
-      const { data, error } = await supabase.from('aashu_yt').select('*').order('created_at', { ascending: false })
-      if(error) return document.getElementById('list').innerHTML = 'Error: ' + error.message
-      document.getElementById('list').innerHTML = data.map(x => `<div class="idea">${x.aashu_yt}</div>`).join('') || 'Pehla idea daal bhai!'
+      try {
+        const res = await fetch(URL + '?select=*&order=created_at.desc', {
+          headers: { 'apikey': KEY, 'Authorization': 'Bearer ' + KEY }
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.message);
+        document.getElementById('list').innerHTML = data.map(x => 
+          `<div class="idea">${x.aashu_yt}</div>`
+        ).join('') || 'Pehla idea daal bhai!';
+      } catch (err) {
+        document.getElementById('list').innerHTML = 'Error: ' + err.message;
+      }
     }
     
-    window.addIdea = async () => {
-      const title = document.getElementById('title').value.trim()
-      if (!title) return alert('Title daal bhai')
-      const { error } = await supabase.from('aashu_yt').insert({ aashu_yt: title })
-      if(error) return alert('Error: ' + error.message)
-      document.getElementById('title').value = ''
-      loadIdeas()
+    async function addIdea() {
+      const title = document.getElementById('title').value.trim();
+      if (!title) return alert('Title daal bhai');
+      try {
+        const res = await fetch(URL, {
+          method: 'POST',
+          headers: { 
+            'apikey': KEY, 
+            'Authorization': 'Bearer ' + KEY,
+            'Content-Type': 'application/json',
+            'Prefer': 'return=minimal'
+          },
+          body: JSON.stringify({ aashu_yt: title })
+        });
+        if (!res.ok) {
+          const data = await res.json();
+          throw new Error(data.message);
+        }
+        document.getElementById('title').value = '';
+        loadIdeas();
+      } catch (err) {
+        alert('Error: ' + err.message);
+      }
     }
     
-    loadIdeas()
+    loadIdeas();
   </script>
 </body>
 </html>

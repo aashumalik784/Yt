@@ -3,13 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Aashu YT - Ideas</title>
+  <title>Aashu YT</title>
   <style>
     body { font-family: sans-serif; background: #0f0f0f; color: #fff; padding: 20px; max-width: 600px; margin: auto; }
     h1 { color: #ff0000; }
     input, button { width: 100%; padding: 12px; margin: 8px 0; border-radius: 8px; border: 1px solid #333; background: #1a1a1a; color: #fff; }
     button { background: #ff0000; font-weight: bold; cursor: pointer; }
-    button:hover { background: #cc0000; }
     .idea { background: #212121; padding: 15px; margin: 10px 0; border-radius: 8px; border-left: 3px solid #ff0000; }
   </style>
 </head>
@@ -18,52 +17,23 @@
   <input type="text" id="title" placeholder="Video Title Likho">
   <button onclick="addIdea()">Save Kar Do</button>
   <div id="list">Loading...</div>
-
   <script type="module">
     import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
-    
-    // Teri Real Keys - Ab sahi wali daal di
-    const SUPABASE_URL = 'https://cjhekttfyzrqgwwyprjk.supabase.co'
-    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNqaGVrdHRmeXpyZ3F3d3lwcmprIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg2OTIyNTIsImV4cCI6MjA5NDI2ODI1Mn0.E_7c0i0HrDNegAMXun-Fl-IT9uSUhx9upYHCpfnSuO8'
-    
-    const supabase = createClient(SUPABASE_URL, SUPABASE_KEY)
-
-    // Ideas Load Karne Ka Function
+    const supabase = createClient('https://cjhekttfyzrqgwwyprjk.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNqaGVrdHRmeXpyZ3F3d3lwcmprIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg2OTIyNTIsImV4cCI6MjA5NDI2ODI1Mn0.E_7c0i0HrDNegAMXun-Fl-IT9uSUhx9upYHCpfnSuO8')
     async function loadIdeas() {
-      const { data, error } = await supabase
-        .from('Aashu Yt')
-        .select('*')
-        .order('created_at', { ascending: false })
-      
-      if(error) {
-        console.log('Error:', error)
-        document.getElementById('list').innerHTML = 'Error: ' + error.message
-        return
-      }
-      
-      document.getElementById('list').innerHTML = data.map(x => 
-        `<div class="idea">${x.aashu_yt}</div>`
-      ).join('') || 'Koi idea nahi hai bhai. Pehla idea daal!'
+      const { data, error } = await supabase.from('aashu_yt').select('*').order('created_at', { ascending: false })
+      if(error) return document.getElementById('list').innerHTML = 'Error: ' + error.message
+      document.getElementById('list').innerHTML = data.map(x => `<div class="idea">${x.aashu_yt}</div>`).join('') || 'Pehla idea daal bhai!'
     }
-
-    // Naya Idea Add Karne Ka Function
     window.addIdea = async () => {
       const title = document.getElementById('title').value.trim()
       if (!title) return alert('Title daal bhai')
-      
-      const { error } = await supabase
-        .from('Aashu Yt')
-        .insert({ aashu_yt: title })
-      
-      if(error) {
-        alert('Error: ' + error.message)
-        return
-      }
-      
+      const { error } = await supabase.from('aashu_yt').insert({ aashu_yt: title })
+      if(error) return alert('Error: ' + error.message)
       document.getElementById('title').value = ''
       loadIdeas()
     }
-
-    // Page Load Hote Hi Ideas Dikhao
     loadIdeas()
-  </script
+  </script>
+</body>
+</html>

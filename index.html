@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aashu YT - Ideas</title>
+  <style>
+    body { font-family: sans-serif; background: #0f0f0f; color: #fff; padding: 20px; max-width: 600px; margin: auto; }
+    h1 { color: #ff0000; }
+    input, button { width: 100%; padding: 12px; margin: 8px 0; border-radius: 8px; border: 1px solid #333; background: #212121; color: #fff; }
+    button { background: #ff0000; font-weight: bold; cursor: pointer; }
+    .idea { background: #212121; padding: 15px; margin: 10px 0; border-radius: 8px; border-left: 3px solid #ff0000; }
+  </style>
+</head>
+<body>
+  <h1>🔥 Aashu YT Ideas</h1>
+  <input type="text" id="title" placeholder="Video Title Likho">
+  <button onclick="addIdea()">Save Kar Do</button>
+  <div id="list">Loading...</div>
+
+<script type="module">
+  import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
+  const supabase = createClient(
+    'https://cjhekttfyzrgqwwyprjk.supabase.co',
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNqaGVrdHRmeXpyZ3F3d3lwcmprIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDY2MTk3NDMsImV4cCI6MjA2MjE5NTc0M30.TCiW7uEwxQwHdJD5ox4fd_q-z8dnFCEPUknV3UWagvw'
+  )
+
+  async function loadIdeas() {
+    const { data } = await supabase.from('Aashu Yt').select('*').order('id', { ascending: false })
+    document.getElementById('list').innerHTML = data.map(x => `<div class="idea">${x.aashu_yt}</div>`).join('') || 'Koi idea nahi hai abhi'
+  }
+
+  window.addIdea = async () => {
+    const title = document.getElementById('title').value
+    if (!title) return alert('Title daal bhai')
+    await supabase.from('Aashu Yt').insert({ aashu_yt: title })
+    document.getElementById('title').value = ''
+    loadIdeas()
+  }
+
+  loadIdeas()
+</script>
+</body>
+</html>

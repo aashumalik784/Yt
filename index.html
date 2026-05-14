@@ -28,7 +28,7 @@
           headers: { 'apikey': KEY, 'Authorization': 'Bearer ' + KEY }
         });
         const data = await res.json();
-        if (!res.ok) throw new Error(data.message);
+        if (!res.ok) throw new Error(data.message || 'Failed to load');
         document.getElementById('list').innerHTML = data.map(x => 
           `<div class="idea">${x.aashu_yt}</div>`
         ).join('') || 'Pehla idea daal bhai!';
@@ -53,7 +53,7 @@
         });
         if (!res.ok) {
           const data = await res.json();
-          throw new Error(data.message);
+          throw new Error(data.message || 'Failed to save');
         }
         document.getElementById('title').value = '';
         loadIdeas();

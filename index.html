@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Aashu YT</title>
+  <title>Aashu YT Ideas</title>
   <style>
     body { font-family: sans-serif; background: #0f0f0f; color: #fff; padding: 20px; max-width: 600px; margin: auto; }
     h1 { color: #ff0000; }
@@ -20,11 +20,13 @@
   <script type="module">
     import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
     const supabase = createClient('https://cjhekttfyzrqgwwyprjk.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNqaGVrdHRmeXpyZ3F3d3lwcmprIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg2OTIyNTIsImV4cCI6MjA5NDI2ODI1Mn0.E_7c0i0HrDNegAMXun-Fl-IT9uSUhx9upYHCpfnSuO8')
+    
     async function loadIdeas() {
       const { data, error } = await supabase.from('aashu_yt').select('*').order('created_at', { ascending: false })
       if(error) return document.getElementById('list').innerHTML = 'Error: ' + error.message
       document.getElementById('list').innerHTML = data.map(x => `<div class="idea">${x.aashu_yt}</div>`).join('') || 'Pehla idea daal bhai!'
     }
+    
     window.addIdea = async () => {
       const title = document.getElementById('title').value.trim()
       if (!title) return alert('Title daal bhai')
@@ -33,6 +35,7 @@
       document.getElementById('title').value = ''
       loadIdeas()
     }
+    
     loadIdeas()
   </script>
 </body>
